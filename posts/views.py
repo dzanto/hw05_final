@@ -172,7 +172,8 @@ def add_comment(request, username, post_id):
 
 @login_required
 def follow_index(request):
-    follows = get_list_or_404(Follow, user=request.user)
+
+    follows = Follow.objects.filter(user=request.user)
     authors = [follow.author for follow in follows]
     post_list = Post.objects.filter(author__in=authors)
 
