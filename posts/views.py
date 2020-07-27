@@ -64,25 +64,18 @@ def profile(request, username):
 
     if request.user.is_authenticated:
         following = Follow.objects.filter(user=request.user).filter(author=author).exists()
-        context = {
-            "author": author,
-            "counter": counter,
-            'page': page,
-            'paginator': paginator,
-            "follower_counter": follower_counter,
-            "following_counter": following_counter,
-            'following': following,
-            }
     else:
-        context = {
-            "author": author,
-            "counter": counter,
-            'page': page,
-            'paginator': paginator,
-            "follower_counter": follower_counter,
-            "following_counter": following_counter,
-            }
+        following = False
 
+    context = {
+        "author": author,
+        "counter": counter,
+        'page': page,
+        'paginator': paginator,
+        "follower_counter": follower_counter,
+        "following_counter": following_counter,
+        'following': following,
+        }
     return render(request, 'profile.html', context)
 
 
@@ -95,17 +88,7 @@ def post_view(request, username, post_id):
 
     counter = author.posts.count()
 
-    if request.method != "POST":
-        form = CommentForm()
-        return render(request, 'post.html', {
-            "author": author,
-            "counter": counter,
-            "post": post,
-            "form": form,
-            'items': comment_list,
-        })
-
-    form = CommentForm(request.POST)
+    form = CommentForm(request.POST or None)
     if not form.is_valid():
         return render(request, 'post.html', {
             "author": author,
@@ -157,25 +140,19 @@ def server_error(request):
 
 @login_required
 def add_comment(request, username, post_id):
-    if request.method != "POST":
+    form = CommentForm(request.POST or None)
+    if form.is_valid():
+        post = get_object_or_404(Post, id=post_id, author__username=username)
+        comment = form.save(commit=False)
+        comment.author = request.user
+        comment.post = post
+        comment.save()
         return redirect("post", username=f"{username}", post_id=f"{post_id}")
-
-    post = get_object_or_404(Post, id=post_id, author__username=username)
-
-    comment = Comment()
-    comment.text = request.POST.get("text")
-    comment.author = request.user
-    comment.post = post
-    comment.save()
-    return redirect("post", username=f"{username}", post_id=f"{post_id}")
 
 
 @login_required
 def follow_index(request):
-
-    follows = Follow.objects.filter(user=request.user)
-    authors = [follow.author for follow in follows]
-    post_list = Post.objects.filter(author__in=authors)
+    post_list = Post.objects.filter(author__following__user=request.user)
 
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
