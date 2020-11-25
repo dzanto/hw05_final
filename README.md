@@ -1,6 +1,6 @@
 # Блог на Django
 
-<h2> Функциональность </h2>
+### Функциональность
 <ul>
  <li>Регистрация и авторизация пользователей</li>
  <li>Просмотр профайлов пользователей</li>
@@ -14,23 +14,23 @@
 </ul>
 
 	
-<h2> Если вы хотите запустить проект локально </h2>
+### Если вы хотите запустить проект локально
 
-	Создайте директорию, например my_blog	
-	Склонируйте репозитарий в директорию my_blog
-	<code> git clone https://github.com/dzanto/hw05_final.git </code>
+Создайте директорию, например my_blog	
+Склонируйте репозитарий в директорию my_blog
+> git clone https://github.com/dzanto/hw05_final.git
 
-	создайте виртуальное окружение
-	python -m venv venv
-	
-	запустите виртуальное окружение
-	для windows: source venv/script/activate
+создайте виртуальное окружение
+> python -m venv venv
 
-	установите требуемые приложения:
-	pip install -r requirements.txt
+запустите виртуальное окружение
+> для windows: source venv/script/activate
 
-	примините миграции Django:
-	python manage.py migrate
+установите требуемые приложения:
+> pip install -r requirements.txt
 
-	запустите сервер Django:
-	python manage.py runserver
+примините миграции Django:
+> python manage.py migrate
+
+запустите сервер Django:
+> python manage.py runserver
